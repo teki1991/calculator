@@ -3,29 +3,34 @@ name: Build Windows EXE
 on:
   push:
     branches:
-      - main
+      - main  
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
 
-      - name: Install pyinstaller
-        run: pip install pyinstaller
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Build EXE
-        run: pyinstaller --onefile calculator.py
+    - name: Install pyinstaller
+      run: pip install pyinstaller
 
-      - name: Upload EXE
-        uses: actions/upload-artifact@v3
-        with:
-          name: calculator-exe
-          path: dist/calculator.exe
+    - name: Build Windows EXE
+      run: pyinstaller --onefile calculator.py
+
+    - name: Upload EXE as artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: calculator-exe
+        path: dist/calculator.exe
